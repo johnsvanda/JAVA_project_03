@@ -1,0 +1,35 @@
+version: "3.9"
+name: "johnsvanda_project_03"
+services:
+  app:
+    image: 'johnsvanda/project_03:latest'
+    build:
+      context: .
+    container_name: project_03
+    depends_on:
+      db:
+          condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/student
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING.JPA.GENERATE-DDL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create
+    ports:
+      - "8080:8080"
+  db:
+    image: postgres:14.1-alpine
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "student", "-U", "postgres" ]
+      timeout: 45s
+      interval: 1s
+      retries: 10
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
