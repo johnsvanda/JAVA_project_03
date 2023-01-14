@@ -1,4 +1,4 @@
-# JAVA_project_03
+# Java 3. Projekt
 
-## Docker pull command
-docker pull johnsvanda/project_03
+### Docker pull command
+`docker pull johnsvanda/project_03`
